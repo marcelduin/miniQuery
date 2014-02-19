@@ -32,7 +32,7 @@ _$.prototype = {
 	not         : function(sel)  { return this.filter(sel,true) },
 	eq          : function(i)    { return new _$(this[i]) },
 	has         : function(el)   { for(var i=0;i<this.length;i++) if(this[i]==el) return true },
-	add         : function(sel)  { sel = _getEls(sel); var me = this, cu = []; for(var i=0;i<this.length;i++) cu.push(this[i]); var ta = cu.concat([].filter.call(sel,function(n){return !me.has(n)})); return ta.length==this.length?this:new _$(ta) },
+	add         : function(sel)  { sel = _getEls(sel); var me = this, cu = []; for(var i=0;i<this.length;i++) cu.push(this[i]); var ta = cu.concat([].filter.call(sel,function(n){return cu.indexOf(n)==-1})); return ta.length==this.length?this:new _$(ta) },
 	attr        : function(k,v)  { if(v===undefined) return this[0]&&this[0].getAttribute(k); this.each(function(){this[((v===null)?'remove':'set')+'Attribute'](k,v)}); return this },
 	trigger     : function(e,v)  { this.each(function(){var evt = !isIE?new CustomEvent(e,{detail:v}):document.createEvent('CustomEvent');if(isIE) evt.initCustomEvent(e, false, false, v);this.dispatchEvent(evt)}); return this },
 	on          : function(e,f)  { e=e.split(' '); this.each(function(){for(var x in e) this.addEventListener(e[x],f)}); return this },
