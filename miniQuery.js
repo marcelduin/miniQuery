@@ -9,7 +9,6 @@ $.extend = function(){
 	for(var i=(r?2:1);i<a.length;i++) cp(a[i],o);
 	return o;
 };
-$.inArray = function(n,h) { return h.indexOf(n); }
 
 function _getEls(sel,par){
 	if(sel==window) return [window];
