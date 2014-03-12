@@ -4,8 +4,8 @@
 $ = function(s){return new _$(s)};
 
 $.extend = function(){
-	var a = arguments, r = a[0]===true, o = a[r&&1||0];
-	function cp(i,o) { for(var x in i) { var p = i[x], c = p&&p.constructor; o[x] = (r&&c&&(c==Array||c==Object)) ? cp(p,new c) : (r&&c&&(c==Number||c==String)) ? c(p) : p; } return o };
+	var a = arguments, r = a[0]===true, o = a[r&&1||0], concatStrings = a[r&&3||2];
+	function cp(i,o) { for(var x in i) { var p = i[x], c = p&&p.constructor; o[x] = (r&&c&&(c==Array||c==Object)) ? cp(p,new c) : (c&&(c==Number||c==String)) ? (concatStrings&&c==String&&o[x]&&o[x].constructor==String)? o[x]+' '+p : c(p) : p; } return o };
 	for(var i=(r?2:1);i<a.length;i++) cp(a[i],o);
 	return o;
 };
@@ -39,11 +39,11 @@ _$.prototype = {
 	off         : function(e,f)  { e=e.split(' '); this.each(function(){for(var x in e) this.removeEventListener(e[x],f)}); return this },
 	click       : function(f)    { if(f instanceof Function) this.on('click',f); else this.trigger('click'); return this },
 	text        : function(t)    { if(t===undefined) return this[0]&&this[0].textContent; this.each(function(){this.textContent=t}); return this },
-	html        : function(h)    { if(t===undefined) return this[0]&&this[0].innerHTML; this.each(function(){this.innerHTML=h}); return this },
+	html        : function(h)    { if(h===undefined) return this[0]&&this[0].innerHTML; this.each(function(){this.innerHTML=h}); return this },
 	hasClass    : function(cl,h) { h=0;this.each(function(){h+=this.classList.contains(cl)&&1||0});return !!h },
-	addClass    : function(cl)   { cl=cl.split(' ');this.each(function(){for(var i in cl) this.classList.add(cl[i])});return this },
-	removeClass : function(cl)   { cl=cl.split(' ');this.each(function(){for(var i in cl) this.classList.remove(cl[i])});return this },
-	toggleClass : function(cl)   { cl=cl.split(' ');for(var x in cl) this[(this.hasClass(cl[x])?'remove':'add')+'Class'](cl[x]); return this },
+	addClass    : function(cl)   { cl=cl.split(' ');this.each(function(){for(var i in cl) if(cl[i]) this.classList.add(cl[i])});return this },
+	removeClass : function(cl)   { cl=cl.split(' ');this.each(function(){for(var i in cl) if(cl[i]) this.classList.remove(cl[i])});return this },
+	toggleClass : function(cl)   { cl=cl.split(' ');for(var x in cl) if(cl[x]) this[(this.hasClass(cl[x])?'remove':'add')+'Class'](cl[x]); return this },
 	setcss      : function(v,p)  { this.each(function(){this.style.setProperty(v,p)}); return this },
 	getcss      : function(p)    { return this[0]&&this[0].style.getPropertyValue(p); },
 	css         : function(a,b)  { if(typeof a == 'string') if(b===undefined) return this.getcss(a); else this.setcss(a,b);else for(var x in a) this.setcss(x,a[x]); return this },
@@ -51,4 +51,24 @@ _$.prototype = {
 	show        : function()     { this.setcss('display','block'); return this },
 	width       : function()     { return this[0]&&this[0].clientWidth },
 	height      : function()     { return this[0]&&this[0].clientHeight }
+};
+
+$.browser = new function(){
+	var ualc = navigator.userAgent.toLowerCase();
+
+	this.webkit = /applewebkit/.test(ualc);
+	this.firefox = /firefox/.test(ualc);
+	this.safari = /safari/.test(ualc) && !/chrome/.test(ualc);
+	this.ie = /msie/.test(ualc) || /trident/.test(ualc);
+	this.iOS = /ipad|iphone|ipod/.test(ualc);
+	this.android = /android/.test(ualc);
+	this.mobile = this.iOS || this.android;
+	this.unknown = !this.webkit&&!this.firefox&&!this.ie&&!this.iOS&&!this.android;
+
+	var vstr = this.webkit?ualc.match(/applewebkit\/(\d+)\./)[1]
+		: this.firefox?ualc.match(/firefox\/(\d+)\./)[1]
+		: this.ie?ualc.match(/(msie\s|rv\:)(\d+)\./)[2]
+		: -1;
+
+	this.version = parseFloat(vstr);
 };
