@@ -66,12 +66,10 @@ $.browser = new function(){
 	this.mobile = this.iOS || this.android || this.iemobile;
 	this.unknown = !this.webkit&&!this.firefox&&!this.ie&&!this.iOS&&!this.android;
 
-	var vstr = this.webkit?ualc.match(/applewebkit\/(\d+)\./)[1]
+	this.version = parseFloat(this.webkit?ualc.match(/applewebkit\/(\d+)\./)[1]
 		: this.firefox?ualc.match(/firefox\/(\d+)\./)[1]
 		: this.ie?ualc.match(/(msie\s|rv\:)(\d+)\./)[2]
-		: -1;
-
-	this.version = parseFloat(vstr);
+		: -1);
 
 	this.retina = (window.devicePixelRatio && window.devicePixelRatio >= 2) && this.iOS;
 
