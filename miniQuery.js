@@ -23,7 +23,9 @@ function _$(sel,par){ var _=_getEls(sel,par); for(var x in _) this[x]=_[x]; if(!
 _$.prototype = {
 	each        : function(f)    { for(var i=0;i<this.length;i++) f.call(this[i]); return this },
 	remove      : function()     { this.each(function(){this.parentNode.removeChild(this)}); return this },
+	clone       : function()     { var r = [];this.each(function(){r.push(this.cloneNode(true))});return $(r) },
 	replaceWith : function(el)   { var me = this; if(me[0]) { if(el.each) el.each(function(){ me[0].parentNode.insertBefore(this,me[0]); }); else me[0].parentNode.insertBefore(el,me[0]); me.remove(); } return this },
+	insertBefore: function(el)   { el=el.length?el[0]:el; this.each(function(){el.parentNode.insertBefore(this,el)})},
 	appendTo    : function(el)   { el=el.length?el[0]:el;this.each(function(){el.appendChild(this)}); return this },
 	parent      : function()     { var r = [];this.each(function(){if(r.indexOf(this.parentNode)<0) r.push(this.parentNode)});return new _$(r); },
 	children    : function(sel)  { sel = sel || '*';var ce = [];this.each(function(){var e = this.querySelectorAll(sel);for(var i=0;i<e.length;i++) if(e[i].parentNode==this) ce.push(e[i]);}); return new _$(ce) },
