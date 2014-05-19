@@ -26,7 +26,8 @@ _$.prototype = {
 	clone       : function(noc)  { var r = [];this.each(function(){var cl=this.cloneNode(!noc);cl._originalNode=this;r.push(cl)});return $(r) },
 	replaceWith : function(el)   { var me = this; if(me[0]) { if(el.each) el.each(function(){ me[0].parentNode.insertBefore(this,me[0]); }); else me[0].parentNode.insertBefore(el,me[0]); me.remove(); } return this },
 	insertBefore: function(el)   { el=el.length?el[0]:el; this.each(function(){el.parentNode.insertBefore(this,el)})},
-	appendTo    : function(el)   { el=el.length?el[0]:el; this.each(function(){el.appendChild(this)}); return this },
+	prependTo   : function(el)   { el=typeof el=='string'?$(el)[0]:el.length?el[0]:el; this.each(function(){el.insertBefore(this,el.firstChild)}); return this },
+	appendTo    : function(el)   { el=typeof el=='string'?$(el)[0]:el.length?el[0]:el; this.each(function(){el.appendChild(this)}); return this },
 	append      : function(el)   { if(this[0]) $(el).appendTo(this[0]); return this },
 	parent      : function()     { var r = [];this.each(function(){if(r.indexOf(this.parentNode)<0) r.push(this.parentNode)}); return new _$(r) },
 	closest     : function(sel)  { var r = [];this.each(function(){var pn = this; while(pn=pn.parentNode) if($(pn).filter(sel)[0]) return r.indexOf(pn)<0&&r.push(pn)}); return new _$(r) },
@@ -57,7 +58,6 @@ _$.prototype = {
 	width       : function()     { return this[0]&&this[0].clientWidth },
 	height      : function()     { return this[0]&&this[0].clientHeight }
 };
-
 $.browser = new function(){
 	var ualc = navigator.userAgent.toLowerCase();
 
