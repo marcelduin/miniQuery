@@ -33,6 +33,7 @@ _$.prototype = {
 	closest     : function(sel)  { var r = [];this.each(function(){var pn = this; while(pn=pn.parentNode) if($(pn).filter(sel)[0]) return r.indexOf(pn)<0&&r.push(pn)}); return new _$(r) },
 	children    : function(vsel) { var sel = typeof vsel == 'string' ? vsel : '*';var ce = [];this.each(function(){ var e = this.querySelectorAll(sel);for(var i=0;i<e.length;i++) if(e[i].parentNode==this && (vsel instanceof _$?vsel.has(e[i]):1)) ce.push(e[i]) }); return new _$(ce) },
 	siblings    : function(sel)  { var r = [], me = this; this.parent().children().filter(sel).each(function(){ if(!me.has(this)&&r.indexOf(this)<0) r.push(this) }); return new _$(r) },
+	nextAll     : function(sel)  { var c = this.siblings(sel), me = this, idx = -1, act = false, done = false, r = []; this.parent().children().each(function(){ if(done) return; if(!act) idx++, act = this==me[0]; else if(!c.has(this)) done = true; else r.push(this) }); return new _$(r) },
 	find        : function(sel)  { return new _$(sel,this[0]) },
 	filter      : function(s,iv) { s = $('<div>').append(this.clone(true)).children(s); return new _$([].filter.call(this,function(n){ for(var i=0;i<s.length;i++) if(s[i]._originalNode==n) return !iv; return !!iv })) },
 	not         : function(sel)  { return this.filter(sel,true) },
